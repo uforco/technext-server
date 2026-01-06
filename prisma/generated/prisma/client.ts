@@ -42,8 +42,3 @@ export { Prisma }
  * 
  */
 export type User = Prisma.UserModel
-/**
- * Model AddtoCart
- * 
- */
-export type AddtoCart = Prisma.AddtoCartModel

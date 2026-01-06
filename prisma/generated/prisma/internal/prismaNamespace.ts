@@ -384,8 +384,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  User: 'User',
-  AddtoCart: 'AddtoCart'
+  User: 'User'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -401,7 +400,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "addtoCart"
+    modelProps: "user"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -479,80 +478,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    AddtoCart: {
-      payload: Prisma.$AddtoCartPayload<ExtArgs>
-      fields: Prisma.AddtoCartFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.AddtoCartFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.AddtoCartFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload>
-        }
-        findFirst: {
-          args: Prisma.AddtoCartFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.AddtoCartFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload>
-        }
-        findMany: {
-          args: Prisma.AddtoCartFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload>[]
-        }
-        create: {
-          args: Prisma.AddtoCartCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload>
-        }
-        createMany: {
-          args: Prisma.AddtoCartCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.AddtoCartCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload>[]
-        }
-        delete: {
-          args: Prisma.AddtoCartDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload>
-        }
-        update: {
-          args: Prisma.AddtoCartUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload>
-        }
-        deleteMany: {
-          args: Prisma.AddtoCartDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.AddtoCartUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.AddtoCartUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload>[]
-        }
-        upsert: {
-          args: Prisma.AddtoCartUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AddtoCartPayload>
-        }
-        aggregate: {
-          args: Prisma.AddtoCartAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateAddtoCart>
-        }
-        groupBy: {
-          args: Prisma.AddtoCartGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AddtoCartGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.AddtoCartCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AddtoCartCountAggregateOutputType> | number
-        }
-      }
-    }
   }
 } & {
   other: {
@@ -603,18 +528,6 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
-
-
-export const AddtoCartScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  productId: 'productId',
-  quantity: 'quantity',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type AddtoCartScalarFieldEnum = (typeof AddtoCartScalarFieldEnum)[keyof typeof AddtoCartScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -700,20 +613,6 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -812,7 +711,6 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
-  addtoCart?: Prisma.AddtoCartOmit
 }
 
 /* Types for Logging */

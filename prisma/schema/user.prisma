@@ -13,15 +13,3 @@ enum AuthProvider {
   GOOGLE
   GITHUB
 }
-
-
-model AddtoCart {
-  id        String   @id @default(uuid())
-  userId    String
-  productId String
-  quantity  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, productId])
-}
