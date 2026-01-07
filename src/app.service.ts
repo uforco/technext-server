@@ -9,12 +9,19 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async getUsers() {
-    const users = await this.prisma.user.findMany();
-    return users;
-  }
-
-  async createUser() {
-    return '';
+  async geturl(url: string): Promise<string | null> {
+    const users = await this.prisma.url.update({
+      where: {
+        shorturl: url,
+      },
+      data: {
+        count: {
+          increment: 1,
+        },
+      },
+      select: { longurl: true },
+    });
+    if (!users) return null;
+    return `${users.longurl}`;
   }
 }

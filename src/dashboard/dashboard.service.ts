@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GenarateUrlDto } from './dto/create-dashboard.dto';
-import { UpdateDashboardDto } from './dto/update-dashboard.dto';
+import { GenarateUrlDto, item } from './dto/create-dashboard.dto';
 import { nanoid } from 'nanoid';
 import { PrismaService } from 'src/config/database/prisma.service';
 
@@ -8,12 +7,25 @@ import { PrismaService } from 'src/config/database/prisma.service';
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(userId: string) {
-    return await this.prisma.url.findMany({
+  async findAll(userId: string): Promise<any> {
+    const data: item[] = await this.prisma.url.findMany({
       where: {
         userId: userId,
       },
+      select: {
+        id: true,
+        shorturl: true,
+        longurl: true,
+        count: true,
+        createdAt: true,
+      },
     });
+    const fullUrl = `${process.env.BACKEND_URL}`;
+    const setData = data.map((item) => ({
+      ...item,
+      shorturl: `${fullUrl}/${item.shorturl}`,
+    }));
+    return setData;
   }
 
   async createShortUrl(createDashboardDto: GenarateUrlDto): Promise<{
@@ -31,7 +43,6 @@ export class DashboardService {
       });
       if (!exUrl) {
         newUrl['shorturl'] = shorturl;
-        // newUrl['longurl'] = createDashboardDto.url;
         break;
       }
     }
@@ -54,15 +65,27 @@ export class DashboardService {
     return genarateNewUrl;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dashboard`;
+  async findOne(id: string) {
+    const data: item | null = await this.prisma.url.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        shorturl: true,
+        longurl: true,
+        count: true,
+        createdAt: true,
+      },
+    });
+    return data;
   }
 
-  update(id: number, updateDashboardDto: UpdateDashboardDto) {
-    return `This action updates a #${id} dashboard`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} dashboard`;
+  async remove(id: string): Promise<any> {
+    return await this.prisma.url.delete({
+      where: {
+        id: id,
+      },
+    });
   }
 }

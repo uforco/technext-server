@@ -1,42 +1,21 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Public } from './auth/decorators/public.decorator';
+import { Response } from 'express';
 // import { Public } from './auth/decorators/public.decorator';
 // import { CreateImapApiDto } from './imap-apis/dto/create-imap-api.dto';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-  ) {}
+  constructor(private readonly appService: AppService) {}
 
   @Public()
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-
-  // @Public()
-  // @Get('getCronJobsKK')
-  // getCronJobsKK(): string {
-  //   return this.imapApisService.getCronJobsKK();
-  // }
-
-  // @Public()
-  // @Post('getAllInvoice')
-  // getAllInvoice(@Body() body: CreateImapApiDto) {
-  //   const result = this.imapApisService.loadCronJobsFromDB(body);
-  //   console.log(result);
-  //   return result;
-  // }
-
-  @Get('users')
-  async getUsers() {
-    return this.appService.getUsers();
-  }
-
-  @Post('createUser')
-  async createUser() {
-    return this.appService.createUser();
+  @Get(':url')
+  async geturl(@Param('url') url: string, @Res() res: Response) {
+    const lognurl = await this.appService.geturl(url);
+    if (!lognurl) {
+      return res.status(404).send('Not Found');
+    }
+    return res.redirect(lognurl);
   }
 }

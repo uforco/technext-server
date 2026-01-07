@@ -20,3 +20,11 @@ export class GenarateUrlDto extends CreateUrlDto {
   @IsNotEmpty()
   userId: string;
 }
+
+export type item = {
+  id: string;
+  longurl: string;
+  shorturl: string;
+  count: number;
+  createdAt: Date;
+};

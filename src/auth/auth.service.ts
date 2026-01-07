@@ -105,7 +105,7 @@ export class AuthService {
     });
   }
 
-  async createUserRegistration(data: CreateUser) {
+  async createUserRegistration(data: CreateUser): Promise<string> {
     const extcUser = await this.validateUser({ ...data, provider: 'LOCAL' });
     if (extcUser)
       throw new ConflictException('Your Have a already account, Pleate login');
