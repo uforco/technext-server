@@ -1,4 +1,14 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 import { Public } from './decorators/public.decorator';
 import { GoogleGuard } from './guards/googleAuth0.guard';
 import { User } from './decorators/user.decorator';
@@ -6,6 +16,8 @@ import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { GithubGuard } from './guards/githubAuth0.guard';
 import { FacebookGuard } from './guards/facebookAuth0.guard';
+import { CreateUser, LocalUserLoginDto } from './dto/createUser.Dto';
+import cookieResponse from './cookieResponse';
 
 @Controller('auth')
 export class AuthController {
@@ -21,22 +33,17 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   @Get('google/callback')
   async googleCallback(@User() user: any, @Res() res: Response) {
-    // console.log(user);
-    const result = await this.authService.socialmediaLogin({
+    console.log(user);
+    const accessToken = await this.authService.socialmediaLogin({
       id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       provider: user.provider,
       image: user.image,
     });
 
-    res.cookie('access_token', result.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      // maxAge: 1 * 60 * 60 * 1000, // 1 hour
-      maxAge: 1 * 60 * 60 * 1000, // 1 hour
-    });
-    res.redirect(`${process.env.FORTEND_URL}`);
+    cookieResponse(res, accessToken);
   }
 
   // github auth login
@@ -51,21 +58,16 @@ export class AuthController {
   async githubCallback(@User() user: any, @Res() res: Response) {
     // console.log(user);
 
-    const result = await this.authService.socialmediaLogin({
+    const accessToken = await this.authService.socialmediaLogin({
       id: user.id,
       email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
       provider: user.provider,
       image: user.image,
     });
 
-    res.cookie('access_token', result.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      // maxAge: 1 * 60 * 60 * 1000, // 1 hour
-      maxAge: 1 * 60 * 60 * 1000, // 1 hour
-    });
-    res.redirect(`${process.env.FORTEND_URL}`);
+    cookieResponse(res, accessToken);
   }
 
   // facebook auth login
@@ -78,21 +80,36 @@ export class AuthController {
   @UseGuards(GithubGuard)
   @Get('facebook/callback')
   async facebookCallback(@User() user: any, @Res() res: Response) {
-    const result = await this.authService.socialmediaLogin({
+    const accessToken = await this.authService.socialmediaLogin({
       id: user.id,
       email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
       provider: user.provider,
       image: user.image,
     });
+    cookieResponse(res, accessToken);
+  }
 
-    res.cookie('access_token', result.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      // maxAge: 1 * 60 * 60 * 1000, // 1 hour
-      maxAge: 1 * 60 * 60 * 1000, // 1 hour
-    });
-    res.redirect(`${process.env.FORTEND_URL}`);
+  @Public()
+  @Post('registration')
+  async userRegistration(
+    @Body(new ValidationPipe()) data: CreateUser,
+    @Res() res: Response,
+  ) {
+    const accessToken = await this.authService.createUserRegistration(data);
+    cookieResponse(res, accessToken);
+  }
+
+  @Public()
+  @Post('login')
+  async login(
+    @Body(new ValidationPipe()) data: LocalUserLoginDto,
+    // @Res() res: Response,
+  ) {
+    const accessToken = await this.authService.loginUser(data);
+    return { accessToken };
+    // cookieResponse(res, accessToken);
   }
 
   @Get('logout')
@@ -113,7 +130,8 @@ export class AuthController {
   async getCookie(@Req() req: any, @User() user: any) {
     // console.log('-------user-----', user);
     // console.log(req.cookies);
-    if (!req.cookies && !req.cookies.access_token) return 'No cookie found';
+    if (!req.cookies && !req.cookies.access_token)
+      throw new UnauthorizedException('Unauthoriz User');
     return await this.authService.getUser(user.sub as string);
   }
 }

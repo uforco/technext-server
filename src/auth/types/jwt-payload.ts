@@ -6,14 +6,23 @@ export interface jwtPayload {
 
 export interface ValidateUser {
   email: string;
+  provider: string;
   password?: string;
-  provider?: string;
+}
+
+export interface CreateValidateUser extends ValidateUser {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password?: string;
   image?: string;
 }
 
 export interface SocialMediaValidateUser {
   id: string;
   email: string;
+  firstName: string;
+  lastName: string;
   provider: string;
   image: string;
 }

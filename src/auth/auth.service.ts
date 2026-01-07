@@ -1,7 +1,17 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/config/database/prisma.service';
-import { SocialMediaValidateUser, ValidateUser } from './types/jwt-payload';
+import {
+  CreateValidateUser,
+  SocialMediaValidateUser,
+  ValidateUser,
+} from './types/jwt-payload';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUser, LocalUserLoginDto } from './dto/createUser.Dto';
 
 @Injectable()
 export class AuthService {
@@ -10,32 +20,37 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(user: ValidateUser) {
+  async validateUser(user: ValidateUser): Promise<any> {
     const foundUser = await this.prisma.user.findUnique({
       where: { email: user.email },
     });
 
     if (!foundUser) return null;
-    if (foundUser.provider === 'LOCAL' && user.password !== foundUser.password)
-      return null;
+    if (foundUser.provider === 'LOCAL' && !user.password)
+      throw new HttpException('Invalid Credentials', 401);
 
     return foundUser;
   }
 
-  async findOrCreateUser(user: ValidateUser) {
+  async createUser(user: CreateValidateUser) {
     const { email, password, provider, image } = user;
 
     if (!email || !provider) {
       return null;
     }
     if (provider === 'LOCAL' && !password)
-      throw new HttpException('Password is required', 400);
+      throw new HttpException('Invalid Credentials', 401);
 
     return await this.prisma.user.create({
       data: {
         email: email,
-        provider: provider === 'GOOGLE' ? 'GOOGLE' : 'LOCAL',
-        image: image,
+        provider:
+          provider === 'GOOGLE'
+            ? 'GOOGLE'
+            : provider === 'GITHUB'
+              ? 'GITHUB'
+              : 'LOCAL',
+        image: image ?? null,
         password: password ?? null,
       },
       select: {
@@ -47,18 +62,18 @@ export class AuthService {
     });
   }
 
-  async socialmediaLogin(user: SocialMediaValidateUser) {
+  async socialmediaLogin(user: SocialMediaValidateUser): Promise<string> {
     if (!user.email || !user.provider) {
       throw new HttpException('No user from google', 400);
     }
     const checkUser = await this.validateUser(user);
     if (checkUser) {
       const token = await this.generateToken(checkUser);
-      return { ...checkUser, token };
+      return token;
     } else {
-      const newUser = await this.findOrCreateUser(user);
+      const newUser = await this.createUser(user);
       const token = await this.generateToken(newUser);
-      return { ...newUser, token };
+      return token;
     }
   }
 
@@ -85,5 +100,26 @@ export class AuthService {
         image: true,
       },
     });
+  }
+
+  async createUserRegistration(data: CreateUser) {
+    const extcUser = await this.validateUser({ ...data, provider: 'LOCAL' });
+    if (extcUser)
+      throw new ConflictException('Your Have a already account, Pleate login');
+
+    const newUser = await this.createUser({ ...data, provider: 'LOCAL' });
+    const token = await this.generateToken(newUser);
+    return token;
+  }
+
+  async loginUser(data: LocalUserLoginDto) {
+    const extcUser = await this.validateUser({ ...data, provider: 'LOCAL' });
+    // console.log('loginUser - extcUser', extcUser);
+    if (!extcUser)
+      throw new UnauthorizedException(
+        'Your Have No account, Pleate First Registration',
+      );
+    const token = await this.generateToken(extcUser);
+    return token;
   }
 }

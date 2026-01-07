@@ -13,7 +13,7 @@ async function bootstrap(): Promise<void> {
   });
   SwaggerSetting(app);
 
-  console.log(process.env.NODE_ENV);
+  
 
   // app.enableCors({
   //   origin: '*',
@@ -22,5 +22,6 @@ async function bootstrap(): Promise<void> {
   // });
 
   await app.listen(process.env.PORT ?? 3000);
+  console.log(process.env.PORT);
 }
 void bootstrap();
