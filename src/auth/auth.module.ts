@@ -3,10 +3,10 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 // import { JwtStrategy } from './strategies/jwt-strategy';
-import { GoogleStrategy } from './strategies/google.strategie';
+// import { GoogleStrategy } from './strategies/google.strategie';
 import { PassportModule } from '@nestjs/passport';
-import { GithubStrategy } from './strategies/github.strategie';
-import { FacebookStrategy } from './strategies/facebook.strategie';
+// import { GithubStrategy } from './strategies/github.strategie';
+// import { FacebookStrategy } from './strategies/facebook.strategie';
 
 @Module({
   imports: [
@@ -18,6 +18,6 @@ import { FacebookStrategy } from './strategies/facebook.strategie';
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy, GithubStrategy, FacebookStrategy],
+  providers: [AuthService], //, GoogleStrategy, GithubStrategy, FacebookStrategy
 })
 export class AuthModule {}
