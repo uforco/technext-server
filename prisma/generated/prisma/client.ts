@@ -42,3 +42,8 @@ export { Prisma }
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Url
+ * 
+ */
+export type Url = Prisma.UrlModel
