@@ -13,8 +13,7 @@ export interface ValidateUser {
 export interface CreateValidateUser extends ValidateUser {
   email: string;
   firstName: string;
-  lastName: string;
-  password?: string;
+  lastName?: string;
   image?: string;
 }
 
@@ -22,7 +21,7 @@ export interface SocialMediaValidateUser {
   id: string;
   email: string;
   firstName: string;
-  lastName: string;
+  lastName?: string;
   provider: string;
   image: string;
 }

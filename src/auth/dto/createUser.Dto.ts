@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 
 export class CreateUser {
   @ApiProperty({
@@ -13,14 +19,14 @@ export class CreateUser {
   firstName: string;
 
   @ApiProperty({
-    required: true,
+    required: false,
     type: String,
     description: 'Last name of the user',
     example: 'Doe',
   })
-  @IsNotEmpty({ message: 'Last name should not be empty' })
+  @IsOptional()
   @IsString({ message: 'Last name must be a string' })
-  lastName: string;
+  lastName?: string;
 
   @ApiProperty({
     required: true,

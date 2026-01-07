@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 
 import { ConfigModule } from '@nestjs/config';
 import { AuthGuard } from './auth/guards/auth.guard';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 
 
@@ -14,6 +15,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
     AuthModule,
+    DashboardModule,
     // PaymentsModule
   ],
   controllers: [AppController],

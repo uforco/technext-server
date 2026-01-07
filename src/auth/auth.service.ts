@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   async createUser(user: CreateValidateUser) {
-    const { email, password, provider, image } = user;
+    const { email, password, provider, image, firstName, lastName } = user;
 
     if (!email || !provider) {
       return null;
@@ -50,6 +50,8 @@ export class AuthService {
             : provider === 'GITHUB'
               ? 'GITHUB'
               : 'LOCAL',
+        firstName,
+        lastName: lastName ?? null,
         image: image ?? null,
         password: password ?? null,
       },
@@ -66,6 +68,7 @@ export class AuthService {
     if (!user.email || !user.provider) {
       throw new HttpException('No user from google', 400);
     }
+
     const checkUser = await this.validateUser(user);
     if (checkUser) {
       const token = await this.generateToken(checkUser);

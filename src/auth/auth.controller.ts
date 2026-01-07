@@ -56,8 +56,6 @@ export class AuthController {
   @UseGuards(GithubGuard)
   @Get('github/callback')
   async githubCallback(@User() user: any, @Res() res: Response) {
-    // console.log(user);
-
     const accessToken = await this.authService.socialmediaLogin({
       id: user.id,
       email: user.email,
@@ -66,7 +64,7 @@ export class AuthController {
       provider: user.provider,
       image: user.image,
     });
-
+    console.log('accessToken', accessToken);
     cookieResponse(res, accessToken);
   }
 

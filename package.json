@@ -43,6 +43,7 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "dotenv-expand": "^12.0.3",
+    "nanoid": "^5.1.6",
     "nestjs-form-data": "^1.9.93",
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",

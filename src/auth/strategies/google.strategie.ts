@@ -23,6 +23,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const payload = {
       id: profile.id,
       email: profile.emails[0].value,
+      firstName: profile.name.givenName,
+      lastName: profile.name.familyName,
       provider: 'GOOGLE',
       image: profile.photos[0].value,
     };
