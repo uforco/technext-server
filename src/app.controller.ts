@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Public } from './auth/decorators/public.decorator';
 // import { Public } from './auth/decorators/public.decorator';
@@ -6,9 +6,7 @@ import { Public } from './auth/decorators/public.decorator';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-  ) {}
+  constructor(private readonly appService: AppService) {}
 
   @Public()
   @Get()
@@ -33,10 +31,5 @@ export class AppController {
   @Get('users')
   async getUsers() {
     return this.appService.getUsers();
-  }
-
-  @Post('createUser')
-  async createUser() {
-    return this.appService.createUser();
   }
 }

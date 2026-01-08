@@ -6,17 +6,12 @@ import { AuthModule } from './auth/auth.module';
 
 import { ConfigModule } from '@nestjs/config';
 import { AuthGuard } from './auth/guards/auth.guard';
-import { DashboardModule } from './dashboard/dashboard.module';
-
-
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
     AuthModule,
-    DashboardModule,
-    // PaymentsModule
   ],
   controllers: [AppController],
   providers: [
@@ -27,4 +22,4 @@ import { DashboardModule } from './dashboard/dashboard.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}
