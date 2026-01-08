@@ -7,5 +7,6 @@ import { DatabaseModule } from 'src/config/database/database.module';
   imports: [DatabaseModule],
   controllers: [DashboardController],
   providers: [DashboardService],
+  exports: [DashboardService]
 })
 export class DashboardModule {}

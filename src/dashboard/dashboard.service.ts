@@ -90,4 +90,22 @@ export class DashboardService {
       },
     });
   }
+
+  async visiteUrl(shorturl: string): Promise<any> {
+    const data: item | null = await this.prisma.url.findUnique({
+      where: {
+        shorturl: shorturl,
+      },
+    });
+    if (!data) return null;
+    await this.prisma.url.update({
+      where: {
+        shorturl: shorturl,
+      },
+      data: {
+        count: data.count + 1,
+      },
+    });
+    return data.longurl;
+  }
 }
