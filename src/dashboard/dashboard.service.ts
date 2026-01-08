@@ -21,10 +21,12 @@ export class DashboardService {
       },
     });
     const fullUrl = `${process.env.BACKEND_URL}`;
-    const setData = data.map((item) => ({
-      ...item,
-      shorturl: `${fullUrl}/${item.shorturl}`,
-    }));
+    const setData = data
+      .map((item) => ({
+        ...item,
+        shorturl: `${fullUrl}/${item.shorturl}`,
+      }))
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
     return setData;
   }
 
