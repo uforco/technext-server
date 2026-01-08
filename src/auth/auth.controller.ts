@@ -103,11 +103,10 @@ export class AuthController {
   @Post('login')
   async login(
     @Body(new ValidationPipe()) data: LocalUserLoginDto,
-    // @Res() res: Response,
+    @Res() res: Response,
   ) {
     const accessToken = await this.authService.loginUser(data);
-    return { accessToken };
-    // cookieResponse(res, accessToken);
+    cookieResponse(res, accessToken, true);
   }
 
   @Get('logout')
