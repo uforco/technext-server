@@ -5,7 +5,6 @@ import {
   Post,
   Req,
   Res,
-  UnauthorizedException,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -43,7 +42,7 @@ export class AuthController {
       image: user.image,
     });
 
-    cookieResponse(res, accessToken);
+    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}/dashboard`);
   }
 
   // github auth login
@@ -65,7 +64,7 @@ export class AuthController {
       image: user.image,
     });
     console.log('accessToken', accessToken);
-    cookieResponse(res, accessToken);
+    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}/dashboard`);
   }
 
   // facebook auth login
@@ -86,7 +85,7 @@ export class AuthController {
       provider: user.provider,
       image: user.image,
     });
-    cookieResponse(res, accessToken);
+    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}/dashboard`);
   }
 
   @Public()
@@ -96,7 +95,9 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const accessToken = await this.authService.createUserRegistration(data);
-    cookieResponse(res, accessToken);
+    cookieResponse(res, accessToken).status(200).json({
+      message: 'Registration successfully',
+    });
   }
 
   @Public()
@@ -106,29 +107,30 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const accessToken = await this.authService.loginUser(data);
-    cookieResponse(res, accessToken, true);
+    cookieResponse(res, accessToken).status(200).json({
+      message: 'Logged in successfully',
+    });
   }
 
+  @Public()
   @Get('logout')
   logout(@Res() res: Response) {
-    res.clearCookie('access_token', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-    });
-
-    return res.status(200).json({
-      message: 'Logged out successfully',
-    });
+    res
+      .clearCookie('access_token', {
+        httpOnly: true,
+        secure: true, //process.env.NODE_ENV === 'production'
+        sameSite: 'none',
+      })
+      .status(200)
+      .json({
+        message: 'Logged out successfully',
+      });
   }
 
   // @Public()
   @Get('me')
   async getCookie(@Req() req: any, @User() user: any) {
-    // console.log('-------user-----', user);
-    // console.log(req.cookies);
-    if (!req.cookies && !req.cookies.access_token)
-      throw new UnauthorizedException('Unauthoriz User');
+    if (!req.cookies && !req.cookies.access_token) return null;
     return await this.authService.getUser(user.sub as string);
   }
 }
