@@ -15,6 +15,7 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    const response = context.switchToHttp().getResponse();
 
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
@@ -47,7 +48,16 @@ export class AuthGuard implements CanActivate {
         where: { id: decoded.sub },
       });
 
-      if (!user) return false;
+      if (!user) {
+        response
+          .clearCookie('access_token', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+          })
+          .status(403)
+        return false;
+      }
 
       request.user = decoded;
     } catch {
