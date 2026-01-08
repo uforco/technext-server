@@ -94,15 +94,20 @@ export class AuthService {
   }
 
   async getUser(id: string) {
-    return await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
         id: true,
         email: true,
+        firstName: true,
+        lastName: true,
         provider: true,
         image: true,
       },
     });
+    if (!user) return null;
+    const { firstName, lastName, ...rest } = user;
+    return { name: `${firstName} ${lastName}`, ...rest };
   }
 
   async createUserRegistration(data: CreateUser) {

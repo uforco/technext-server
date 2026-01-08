@@ -1,12 +1,15 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Param, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Public } from './auth/decorators/public.decorator';
-// import { Public } from './auth/decorators/public.decorator';
-// import { CreateImapApiDto } from './imap-apis/dto/create-imap-api.dto';
+import { DashboardService } from './dashboard/dashboard.service';
+import { Response } from 'express';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly dashboardService: DashboardService,
+  ) {}
 
   @Public()
   @Get()
@@ -14,22 +17,14 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  // @Public()
-  // @Get('getCronJobsKK')
-  // getCronJobsKK(): string {
-  //   return this.imapApisService.getCronJobsKK();
-  // }
-
-  // @Public()
-  // @Post('getAllInvoice')
-  // getAllInvoice(@Body() body: CreateImapApiDto) {
-  //   const result = this.imapApisService.loadCronJobsFromDB(body);
-  //   console.log(result);
-  //   return result;
-  // }
-
-  @Get('users')
-  async getUsers() {
-    return this.appService.getUsers();
+  @Public()
+  @Get(':url')
+  async visiteUrl(
+    @Param('url') url: string,
+    @Res() res: Response,
+  ): Promise<any> {
+    const longurl = await this.dashboardService.visiteUrl(url);
+    if (!longurl) res.redirect(`${process.env.FORTEND_URL}`);
+    else res.redirect(longurl as string);
   }
 }

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { IS_PUBLIC_KEY } from 'src/auth/decorators/public.decorator';
@@ -19,6 +15,7 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    const response = context.switchToHttp().getResponse();
 
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
@@ -37,9 +34,12 @@ export class AuthGuard implements CanActivate {
     // console.log('decoded-token--------', token);
 
     try {
-      const decoded = await this.jwtService.verifyAsync<jwtPayload>(token?.split(' ')[1], {
-        secret: process.env.JWT_SECRET,
-      });
+      const decoded = await this.jwtService.verifyAsync<jwtPayload>(
+        token?.split(' ')[1],
+        {
+          secret: process.env.JWT_SECRET,
+        },
+      );
       // jwtPayload;
 
       // console.log('decoded', decoded);
@@ -48,7 +48,16 @@ export class AuthGuard implements CanActivate {
         where: { id: decoded.sub },
       });
 
-      if (!user) return false;
+      if (!user) {
+        response
+          .clearCookie('access_token', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+          })
+          .status(403)
+        return false;
+      }
 
       request.user = decoded;
     } catch {
