@@ -1,98 +1,182 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🔗 Shortify – URL Shortener Application
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Shortify is a modern **URL shortening platform** with secure authentication, OAuth support, click tracking, and a user-friendly dashboard.  
+It is built with a **scalable backend** and a **high-performance frontend**, following real-world production practices.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🚀 Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 🔐 Authentication & Authorization
+- OAuth 2.0 login with:
+  - Google
+  - GitHub
+  - Facebook
+- Email & password authentication
+- Secure API access using **Auth Guards**
+- Cookie-based authentication (HTTP-only cookies)
+- Session-based user handling
 
-## Project setup
+### ✂️ URL Shortening
+- Create short URLs for long links
+- Redirect short URLs to original URLs
+- Track total clicks/visits
+- Delete URLs securely (user-owned only)
 
-```bash
-$ pnpm install
+### 📊 Dashboard
+- View all shortened URLs for the logged-in user
+- Table-based UI with:
+  - Original URL (truncated with tooltip)
+  - Short code
+  - Full short URL
+  - Total visits
+  - Created date
+  - Delete action
+
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+- **NestJS**
+- **Passport.js**
+- **OAuth 2.0**
+- **PostgreSQL**
+- **Prisma ORM**
+- Cookie-based authentication
+- REST API architecture
+
+### Frontend
+- **Next.js**
+- **Tailwind CSS**
+- **Radix UI**
+- **Redux Toolkit**
+- Fetch API
+- Secure cookie handling
+
+---
+
+## 🧩 Project Architecture
+```
+backend/
+ ├── src/
+ │ ├── auth/
+ │ ├── dashboard/
+ │ ├── prisma/
+ │ └── main.ts
+ └── prisma/
+
+
+frontend/
+ ├── app/
+ ├── components/
+ ├── redux/
+ └── services/
 ```
 
-## Compile and run the project
 
-```bash
-# development
-$ pnpm run start
+---
 
-# watch mode
-$ pnpm run start:dev
+## 🔑 Authentication Flow
 
-# production mode
-$ pnpm run start:prod
+1. User logs in using OAuth (Google / GitHub / Facebook) or Email & Password
+2. Backend validates user via Passport strategy
+3. Server sets **HTTP-only cookie**
+4. Frontend sends requests with `credentials: "include"`
+5. Auth Guard protects all private APIs
+6. User session is validated on every request
+
+---
+
+## 🌐 API Endpoints
+
+### Check Open Api - Swagger - show all Api Endpoints this url
+### ***``` https://technext-server.onrender.com/doc ```
+
+### 🔐 Auth APIs
+
+| Method | Endpoint |
+|------|---------|
+| GET | `/auth/google/login` |
+| GET | `/auth/google/callback` |
+| GET | `/auth/github/login` |
+| GET | `/auth/github/callback` |
+| GET | `/auth/facebook/login` |
+| GET | `/auth/facebook/callback` |
+| POST | `/auth/registration` |
+| POST | `/auth/login` |
+| GET | `/auth/logout` |
+| GET | `/auth/me` |
+
+---
+
+### 🔗 Short URL APIs (Protected)
+
+| Method | Endpoint | Description |
+|------|--------|------------|
+| POST | `/dashboard/create/short-url` | Create a short URL |
+| GET | `/dashboard/get-all-urls` | Get all user URLs |
+| GET | `/dashboard/get-url/:code` | Get single URL details |
+| GET | `/dashboard/delete/:code` | Delete a URL |
+
+---
+
+## 🔁 URL Redirection Logic
+
+- User visits: `https://shortify.com/abc123`
+- Backend:
+  - Finds original URL
+  - Increments visit count
+  - Redirects to long URL
+- Click tracking is stored in the database
+
+---
+
+## 🖥️ Frontend ↔ Backend Integration
+
+### API Requests (Frontend)
+
+### NEXTJS FRONTEND APPLICTION THIS URL
+- ### code base ***``` https://github.com/uforco/technextapp ```
+- ### Line Url ***``` https://technextapp-nu.vercel.app ```
+
+```ts
+fetch(`${API_BASE_URL}/dashboard`, {
+  method: "GET",
+  credentials: "include"
+});
 ```
 
-## Run tests
 
-```bash
-# unit tests
-$ pnpm run test
+## ENV
 
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
 ```
+NODE_ENV=development
+PORT=3000
+HOST=0.0.0.0
+DB_USER=postgres
+DB_PASSWORD=password
+DB_NAME=technext_db
+DB_HOST=db
+DB_PORT=5437
 
-## Deployment
+DATABASE_URL="postgresql://postgres:password@localhost:5437/technext_db?schema=public"
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+#JWT Secret
+JWT_SECRET=''
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+# Google OAuth Credentials
+GOOGLE_CLIENT_ID=''
+GOOGLE_CLIENT_SECRET=''
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+#github OAuth Credentials
+GITHUB_ID=''
+GITHUB_SECRET=''
+
+#facebook 0auth Credentials
+FACEBOOK_CLIENT_ID=''
+FACEBOOK_CLIENT_SECRET=''
+
+FORTEND_URL=http://localhost:3001
+BACKEND_URL=http://localhost:3000
 ```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
