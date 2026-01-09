@@ -8,8 +8,8 @@ export default function cookieResponse(
     httpOnly: true,
     secure: true, //process.env.NODE_ENV === 'production'
     sameSite: 'none',
-    // maxAge:  6 * 1000, // 1 hour
-    maxAge: 1 * 60 * 60 * 1000, // 1 hour
+    maxAge:  60 * 1000, // 1 hour
+    // maxAge: 1 * 60 * 60 * 1000, // 1 hour
   });
   return res;
 }

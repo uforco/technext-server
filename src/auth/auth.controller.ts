@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Post,
   Req,
   Res,
@@ -42,7 +43,7 @@ export class AuthController {
       image: user.image,
     });
 
-    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}/dashboard`);
+    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}`);
   }
 
   // github auth login
@@ -64,7 +65,7 @@ export class AuthController {
       image: user.image,
     });
     console.log('accessToken', accessToken);
-    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}/dashboard`);
+    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}`);
   }
 
   // facebook auth login
@@ -85,7 +86,7 @@ export class AuthController {
       provider: user.provider,
       image: user.image,
     });
-    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}/dashboard`);
+    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}`);
   }
 
   @Public()
@@ -128,6 +129,7 @@ export class AuthController {
   }
 
   // @Public()
+  @HttpCode(200)
   @Get('me')
   async getCookie(@Req() req: any, @User() user: any) {
     if (!req.cookies && !req.cookies.access_token) return null;

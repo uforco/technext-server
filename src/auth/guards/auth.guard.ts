@@ -55,7 +55,6 @@ export class AuthGuard implements CanActivate {
             secure: true,
             sameSite: 'none',
           })
-          .status(403)
         return false;
       }
 
