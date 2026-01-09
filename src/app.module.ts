@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     DatabaseModule,
     AuthModule,
     DashboardModule,
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
   providers: [

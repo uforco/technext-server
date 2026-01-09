@@ -33,7 +33,6 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   @Get('google/callback')
   async googleCallback(@User() user: any, @Res() res: Response) {
-    console.log(user);
     const accessToken = await this.authService.socialmediaLogin({
       id: user.id,
       firstName: user.firstName,
@@ -43,7 +42,7 @@ export class AuthController {
       image: user.image,
     });
 
-    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}`);
+    cookieResponse(res, accessToken).redirect(`${process.env.FORTEND_URL}/dashboard`);
   }
 
   // github auth login

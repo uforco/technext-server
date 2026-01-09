@@ -12,14 +12,6 @@ async function bootstrap(): Promise<void> {
     credentials: true,
   });
   SwaggerSetting(app);
-
-  // app.enableCors({
-  //   origin: '*',
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  //   credentials: true,
-  // });
-
   await app.listen(process.env.PORT ?? 3000);
-  console.log(process.env.PORT);
 }
 void bootstrap();
